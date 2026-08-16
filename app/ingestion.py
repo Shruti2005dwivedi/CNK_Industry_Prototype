@@ -82,9 +82,14 @@ def _ocr_page(page) -> str:
     """OCR fallback for scanned/image-only pages."""
     if not OCR_AVAILABLE:
         return ""
-    pix = page.get_pixmap(dpi=200)
-    img = Image.open(io.BytesIO(pix.tobytes("png")))
-    return pytesseract.image_to_string(img)
+    try:
+        pix = page.get_pixmap(dpi=200)
+        img = Image.open(io.BytesIO(pix.tobytes("png")))
+        return pytesseract.image_to_string(img)
+    except Exception as e:
+        # If OCR fails, return empty string instead of crashing
+        print(f"OCR failed: {e}")
+        return ""
 
 
 def extract_pages(pdf_path: str) -> list[tuple[int, str]]:
@@ -97,8 +102,12 @@ def extract_pages(pdf_path: str) -> list[tuple[int, str]]:
     doc = fitz.open(pdf_path)
     for i, page in enumerate(doc, start=1):
         text = page.get_text("text").strip()
-        if len(text) < 20:  # likely scanned / image-only page
-            text = _ocr_page(page).strip()
+        if len(text) < 20 and OCR_AVAILABLE:  # likely scanned / image-only page
+            try:
+                text = _ocr_page(page).strip()
+            except Exception as e:
+                print(f"OCR failed for page {i}: {e}")
+                # Continue with extracted text even if OCR fails
         pages.append((i, text))
     doc.close()
     return pages
