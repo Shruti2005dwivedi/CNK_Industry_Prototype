@@ -68,7 +68,13 @@ async def ingest(file: UploadFile = File(...)):
         store = get_vector_store()
         count = store.add_chunks(chunks)
     finally:
-        os.unlink(tmp_path)
+        # Close file handles before deletion on Windows
+        import time
+        time.sleep(0.5)  # Give Windows time to release file handles
+        try:
+            os.unlink(tmp_path)
+        except PermissionError:
+            pass  # Ignore if file is still locked
 
     return IngestResponse(filename=file.filename, chunks_created=count, status="indexed")
 
