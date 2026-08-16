@@ -51,7 +51,20 @@ def startup():
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    # Check if OCR is available
+    ocr_available = False
+    try:
+        import pytesseract
+        pytesseract.get_tesseract_version()
+        ocr_available = True
+    except:
+        pass
+    
+    return {
+        "status": "ok",
+        "ocr_available": ocr_available,
+        "ocr_message": "Scanned PDFs supported" if ocr_available else "Only text PDFs supported (install Tesseract for scanned PDFs)"
+    }
 
 
 @app.post("/ingest", response_model=IngestResponse)

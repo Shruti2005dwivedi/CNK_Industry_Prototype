@@ -254,7 +254,11 @@
             <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
                 📄 Upload PDF
             </button>
-            <div class="file-info" id="fileInfo">Click to upload a tax document (PDF only)</div>
+            <div class="file-info" id="fileInfo">
+                Click to upload a tax document (PDF only)
+                <br>
+                <small id="ocrStatus" style="color: #888;">Checking OCR support...</small>
+            </div>
         </div>
         
         <div class="chat-box" id="chatBox">
@@ -290,7 +294,25 @@
     <script>
         const API_URL = 'http://127.0.0.1:8000/query';
         const UPLOAD_URL = 'http://127.0.0.1:8000/ingest';
+        const HEALTH_URL = 'http://127.0.0.1:8000/health';
         let sessionId = 'user_' + Date.now();
+        
+        // Check OCR status on page load
+        window.addEventListener('load', checkOCRStatus);
+        
+        async function checkOCRStatus() {
+            const ocrStatus = document.getElementById('ocrStatus');
+            try {
+                const response = await fetch(HEALTH_URL);
+                const data = await response.json();
+                
+                // For now, we'll show a generic message
+                // You can extend the health endpoint to return OCR status
+                ocrStatus.innerHTML = '✅ Text PDFs supported | ⚠️ For scanned PDFs, <a href="INSTALL_OCR.md" target="_blank" style="color: #667eea;">install OCR</a>';
+            } catch (error) {
+                ocrStatus.innerHTML = '⚠️ Server not connected';
+            }
+        }
         
         async function uploadPDF() {
             const fileInput = document.getElementById('fileInput');
