@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Assistant - Simple Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 800px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 15px;
+            border-radius: 15px;
+            line-height: 1.5;
+        }
+        
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message.bot .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .citations {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        
+        .citation-item {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #userInput {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        #userInput:focus {
+            border-color: #667eea;
+        }
+        
+        #sendBtn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        #sendBtn:hover {
+            transform: scale(1.05);
+        }
+        
+        #sendBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .welcome {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .welcome h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .example-questions {
+            margin-top: 20px;
+        }
+        
+        .example-btn {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .upload-section {
+            padding: 15px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .upload-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        .upload-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .file-info {
+            flex: 1;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .upload-status {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .upload-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .upload-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Tax Assistant Chatbot</h1>
+            <p>Ask me anything about tax regulations and circulars</p>
+        </div>
+        
+        <div class="upload-section">
+            <input type="file" id="fileInput" accept=".pdf" onchange="uploadPDF()">
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                📄 Upload PDF
+            </button>
+            <div class="file-info" id="fileInfo">Click to upload a tax document (PDF only)</div>
+        </div>
+        
+        <div class="chat-box" id="chatBox">
+            <div class="welcome">
+                <h2>Welcome! 👋</h2>
+                <p>I'm your Tax Assistant. I can help you with questions about tax regulations, ITC claims, and more!</p>
+                <div class="example-questions">
+                    <p><strong>Try asking:</strong></p>
+                    <button class="example-btn" onclick="askQuestion('Can I claim ITC on a delayed invoice?')">
+                        Can I claim ITC on a delayed invoice?
+                    </button>
+                    <button class="example-btn" onclick="askQuestion('What are the conditions for claiming ITC?')">
+                        What are the conditions for claiming ITC?
+                    </button>
+                    <button class="example-btn" onclick="askQuestion('Tell me about Section 16')">
+                        Tell me about Section 16
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Type your question here..." 
+                onkeypress="handleKeyPress(event)"
+            >
+            <button id="sendBtn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000/query';
+        const UPLOAD_URL = 'http://127.0.0.1:8000/ingest';
+        let sessionId = 'user_' + Date.now();
+        
+        async function uploadPDF() {
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            if (!file.name.toLowerCase().endsWith('.pdf')) {
+                showUploadStatus('Please upload only PDF files', 'error');
+                return;
+            }
+            
+            fileInfo.textContent = `Uploading ${file.name}...`;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch(UPLOAD_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Upload failed');
+                }
+                
+                const data = await response.json();
+                showUploadStatus(`✅ Successfully uploaded ${data.filename}! Added ${data.chunks_created} chunks to the database.`, 'success');
+                fileInfo.textContent = `Last uploaded: ${file.name}`;
+                
+                // Add a bot message about the upload
+                addMessage('bot', `Great! I've processed "${data.filename}" and indexed ${data.chunks_created} text chunks. You can now ask me questions about this document! 📚`);
+                
+            } catch (error) {
+                showUploadStatus('❌ Upload failed. Please check if the server is running.', 'error');
+                fileInfo.textContent = 'Click to upload a tax document (PDF only)';
+            }
+            
+            fileInput.value = '';
+        }
+        
+        function showUploadStatus(message, type) {
+            const chatBox = document.getElementById('chatBox');
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `upload-status ${type}`;
+            statusDiv.textContent = message;
+            chatBox.appendChild(statusDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                statusDiv.remove();
+            }, 5000);
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function askQuestion(question) {
+            document.getElementById('userInput').value = question;
+            sendMessage();
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const chatBox = document.getElementById('chatBox');
+            const query = input.value.trim();
+            
+            if (!query) return;
+            
+            // Clear welcome message on first query
+            const welcome = chatBox.querySelector('.welcome');
+            if (welcome) {
+                welcome.remove();
+            }
+            
+            // Add user message
+            addMessage('user', query);
+            
+            // Clear input and disable button
+            input.value = '';
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<span class="loading"></span>';
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        session_id: sessionId,
+                        top_k: 5
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                
+                const data = await response.json();
+                
+                // Add bot response
+                addMessage('bot', data.answer, data.citations);
+                
+            } catch (error) {
+                addMessage('bot', '❌ Sorry, I encountered an error. Please make sure the server is running and try again.');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = 'Send';
+            }
+        }
+        
+        function addMessage(type, content, citations = null) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            let citationsHtml = '';
+            if (citations && citations.length > 0) {
+                citationsHtml = '<div class="citations"><strong>📚 Sources:</strong>';
+                citations.forEach(cite => {
+                    citationsHtml += `<div class="citation-item">
+                        📄 ${cite.source_document}
+                        ${cite.section_reference ? ' - ' + cite.section_reference : ''}
+                        ${cite.date_of_issue ? ' (' + cite.date_of_issue + ')' : ''}
+                    </div>`;
+                });
+                citationsHtml += '</div>';
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${content}
+                    ${citationsHtml}
+                </div>
+            `;
+            
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
