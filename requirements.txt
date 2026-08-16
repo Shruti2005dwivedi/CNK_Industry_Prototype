@@ -1,0 +1,28 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+pydantic-settings==2.5.2
+python-dotenv==1.0.1
+python-multipart==0.0.9
+
+# PDF parsing + OCR
+PyMuPDF==1.24.10
+pytesseract==0.3.13
+pillow==10.4.0
+
+# Chunking / text utils
+langchain-text-splitters==0.3.0
+
+# Embeddings + vector store
+sentence-transformers==3.1.1
+chromadb==0.5.4
+
+# Hybrid keyword search
+rank-bm25==0.2.2
+
+# LLM providers (pick one or both)
+groq==0.11.0
+google-generativeai==0.8.2
+
+# Misc
+tqdm==4.66.5

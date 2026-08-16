@@ -1,0 +1,32 @@
+CBDT Circular No. 12/2026
+Issued by: Income Tax Department
+Date of Issue: 15-06-2026
+
+Subject: Clarification on Input Tax Credit for Delayed Invoices under Section 16(4)
+
+1. Background
+Representations have been received from various stakeholders seeking clarification on whether
+Input Tax Credit (ITC) can be claimed on invoices where the supplier has delayed issuance beyond
+the prescribed statutory period.
+
+2. Clarification
+Section 16(4) of the CGST Act provides that a registered person shall not be entitled to take
+input tax credit in respect of any invoice or debit note for supply of goods or services after the
+thirtieth day of November following the end of the financial year to which such invoice or debit
+note pertains, or furnishing of the relevant annual return, whichever is earlier.
+
+Where the delay in invoice issuance is attributable to the supplier and not the recipient, and the
+recipient claims the credit within the statutory window measured from the date the invoice was
+actually made available, such credit shall not be denied solely on the ground of delayed issuance,
+provided all other conditions under Section 16(2) are satisfied.
+
+3. Illustration
+If a supplier issues an invoice dated 20-03-2026 for a supply made in FY 2025-26 but the invoice
+is received by the recipient only on 05-11-2026, the recipient may still claim ITC provided the
+claim is made before the due date of filing the annual return for FY 2025-26, i.e., 30-11-2026.
+
+4. Applicability
+This clarification applies to all pending assessments and audits as of the date of this circular.
+Field formations are directed to apply this clarification uniformly.
+
+CBDT Circular No. 12/2026, dated 15-06-2026.
